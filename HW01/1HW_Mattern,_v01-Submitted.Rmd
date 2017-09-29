@@ -1,0 +1,117 @@
+---
+title: "1HW_Mattern"
+author: "Rebecca Mattern"
+date: "9/21/2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tidyverse)
+```
+
+3.2.4
+1. I see a table of data.
+```{r}
+ggplot(data=mpg)
+```
+
+2. There are 234 rows and 11 columns.
+3. The drv variable describes the type of wheel drive (front, rear, or four).
+4.
+```{r}
+ggplot(data=mpg) + geom_point(mapping=aes(x=hwy, y=cyl))
+```
+
+5. It is not useful because they are both categorical variables and thus cannot show any correlation.
+```{r}
+ggplot(data=mpg) + geom_point(mapping=aes(x=class, y=drv))
+```
+
+3.3.1 (excluding #3)
+1. The parenthesis needs to go before color="blue", not afterwards.
+2. The categorical variables are: model, trans, drv, fl, and class. The continuous variables are: disp, year, cyl, cty, and hwy. The ?mpg commands shows up in the help tab on the lower right hand corner of RStudio.
+4. RStudio advises against using size for a discrete variable and only the color variable shows up.
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = "cty", shape = "cty", size = "cty"))
+```
+5. It shapes the size of the data points based on numerical value, it uses circles.
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, stroke = cyl))
+```
+6. It is an incomplete expression.
+
+3.5.1 (excluding #4)
+1. There are boxes for each of the continous values.
+```{r}
+ggplot(data=mpg) + geom_point(mapping=aes(x=class, y=drv)) + facet_grid(. ~ cyl)
+```
+2. The empty cells mean that there are no instances when the rear wheel drive had 4 or 5 cylinders.
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = drv, y = cyl)) + facet_grid(drv ~ cyl)
+```
+3. The . serves as a filler so that drv is only compared to itself. It is only a one-direction grid.
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+```
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+```
+
+5. nRow and nCol stands for the number of rows and columns. The other option controls are scales, shrink, labeller, as.table, switch, drop, dir, and strip.position. Facet_grid doesn't have nrow or ncol option, because its row and column parameters are set by a variable.
+
+6. When using facet_grid you should usually put the variable with more unique levels in the columns to prevent from there being too many boxes. It needs to be specific to only a few, so that they can be compared more easily.
+
+3.6.1 (excluding #6)
+1. To draw a line chart you would use geom_abline. Boxplot: geom_boxplot() Histogram: geom_histogram Area chart: geom_area.
+2. The visualization matched my predictions.
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  geom_smooth(se=FALSE)
+```
+
+
+
+3. show.legend=FALSE takes away the key. Taking it away puts the key back.
+4. It took away the shading.
+5. The graphs looked the same because both adequately established the inputs.
+
+3.7.1 (excluding #3)
+1. The default geom associated with stat_summary is geom_pointrange. You could rewrite it with that function.
+2. Geom_col allows you to add a y aesthetic. Geom_bar only allows for one variable and hence shows the count.
+```{r}
+ggplot(data = diamonds) +
+  geom_col(mapping = aes(x = cut, y=z))
+```
+4. Stat_smooth uses se, x, y, ymin, and ymax variables.
+5. Without group = 1, the variables all look the same, they are evenly distributed.
+
+3.8.1
+1. The problem is that there are a few outliers. You could improve it by cutting off the domain at cty=30.
+2. Height and width.
+3. Geom_jitter scatters the points around the grid, where geom_count places one point on every intersection of gridlines.
+4. The default position is "dodge".
+```{r}
+ggplot(data=mpg) + geom_boxplot(mapping=aes(x=cyl, y=model))
+```
+
+3.9.1
+1.
+```{r}
+ggplot(data=mpg) + geom_bar(mapping=aes(x=displ)) + coord_polar()
+```
+2. labs() adds labels by adding text to the axis, plot title, or caption below the plot.
+3. Coord_map shows a 3D image on a 2D space, and coord_quickmap aligns the image straightly.
+4. The plot shows that city and highway are positively correlated. Coord_fixed changes the ratio dimensions of the plot. Geom_abline adds the line beside the plotted points.
+

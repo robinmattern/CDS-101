@@ -1,0 +1,191 @@
+---
+title:  "1HW_Mattern - Visualization class I"
+author: "Rebecca Mattern"
+date:   "September 21, 2017"
+output:
+  word_document:
+    keep_md: yes
+    reference_docx: CDS_HW_Template.docm
+  pdf_document:
+    keep_tex: yes
+    latex_engine: xelatex
+  html_document: default
+geometry: margin=.5in
+mainfont: Arial
+fontsize: 12pt
+---
+<style>
+  H4 {    margin-top        : 20px;
+          margin-left       : 10px;
+          margin-bottom     :  5px;
+          }
+ .Pagebreak {
+          font-size         :  1px;
+          margin-top        : -12px;
+          page-break-after  :  always;
+          }
+ .author { text-align       : center; margin : 0px; }       
+ .title  { text-align       : center; margin : 0px; }       
+ .date   { text-align       : center; margin : 0px; }       
+ 
+</style>
+
+```{r Setup, include = FALSE }
+    library(knitr)
+    knitr::opts_chunk$set( echo      =  TRUE
+#                        , fig.show  = 'hide', results    = 'hide'
+                         , fig.width =  7,     fig.height =  3.6
+#                        , fig.path  = 'IMGs/'
+                         , warning   =  FALSE, message    =  FALSE
+                           )
+```
+
+<!-- first image 3.2.4.5 
+      PDF and HTML:  fig.height =  3.1
+      Word:          fig.height =  3.75
+-->      
+```{r echo = FALSE }
+    output <- opts_knit$get("rmarkdown.pandoc.to")
+if (output=="docx") { nPlot1_Height <- 3.5 } else { nPlot1_Height <- 3.1 }
+#  nPlot1_Height
+```
+
+#### 3.1.1 Prerequisites:
+```{r}
+    library( ggplot2 )
+#   library( tidyverse )
+```
+
+#### 3.2.4 Examine dataset mpg: (excluding #4)
+1. I see a table of data
+2. There are 234 rows and 11 columns.
+3. The drv variable describes the type of wheel drive (front, rear, or four).
+```{r}
+    mpg
+```
+4. (excluded)
+5. It is not useful because they are both categorical variables and thus cannot show any correlation.
+```{r, echo = FALSE}  
+   opts_chunk$set( fig.height = nPlot1_Height )
+```
+```{r}  
+#   nPlot1_Height
+    ggplot( data  =  mpg ) +
+		    geom_point(  mapping =  aes( x = class, y = drv ) )
+```
+```{r, echo = FALSE}  
+   opts_chunk$set( fig.width =  7, fig.height =  3.6 )
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+#### 3.3.1 Plot relationship between engine size and highway mileage: (excluding #3)
+
+1. The parenthesis needs to go before color="blue", not afterwards.
+
+2. The categorical variables are: model, trans, drv, fl, and class. The continuous variables are:
+   disp, year, cyl, cty, and hwy. The ?mpg commands shows up in the help tab on the lower right
+   hand corner of RStudio.
+3. (excluded)
+4. RStudio advises against using size for a discrete variable and only the color variable shows up.
+
+5. It shapes the size of the data points based on numerical value, it uses circles.
+```{r, fig.height =  3.25}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) )
+```
+
+6. It is an incomplete expression.
+```{r}
+	ggplot( data  =  mpg ) +
+  		geom_point(  mapping =  aes( x = displ, y = hwy, stroke = cyl ) )
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+#### 3.5.1 Add Facets: (excluding #4)
+1. There are boxes for each of the continous values.
+```{r, fig.height = 3.9}
+	ggplot( data  =  mpg ) +
+		geom_point(  mapping =  aes( x = class, y = drv ) ) + facet_grid(  .  ~ cyl )
+```
+
+2. The empty cells mean that there are no instances when the rear wheel drive had 4 or 5 cylinders.
+```{r, fig.height = 3.9}
+	ggplot( data  =  mpg ) +
+  		geom_point(  mapping =  aes( x = drv,   y = cyl ) ) + facet_grid( drv ~ cyl )
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+3. The period (.) serves as a filler so that drv is only compared to itself. It is only a one-direction grid.
+```{r}
+	ggplot( data  =  mpg ) +
+  		geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_grid( drv ~  .  )
+```
+
+4. (excluded)
+5. nRow and nCol stands for the number of rows and columns. The other option controls are scales, shrink,
+   labeller, as.table, switch, drop, dir, and strip.position. Facet_grid doesn't have nrow or ncol option,
+   because its row and column parameters are set by a variable.
+
+6. When using facet_grid you should usually put the variable with more unique levels in the columns to
+   prevent from there being too many boxes. It needs to be specific to only a few, so that they can be
+   compared more easily.
+```{r}
+	ggplot( data  =  mpg ) +
+  		geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_grid(  .  ~ cyl )
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+#### 3.6.1 Add more geometric layers / objects: (excluding #6)
+
+1. To draw a line chart you would use geom_abline.
+     + Boxplot: geom_boxplot()
+     + Histogram: geom_histogram Area
+     + Chart: geom_area.
+
+2. The visualization matched my predictions.
+3. show.legend=FALSE takes away the key. Taking it away puts the key back.
+4. It took away the shading.
+5. The graphs looked the same because both adequately established the inputs.
+6. (excluded)
+
+```{r, fig.height = 2.75}
+	ggplot( data  =  mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  		geom_point() +
+  		geom_smooth(se=FALSE)
+```
+
+#### 3.7.1 Statistical Transformations (excluding #3)
+
+1. The default geom associated with stat_summary is geom_pointrange. You could rewrite it with that function.
+
+2. Geom_col allows you to add a y aesthetic. Geom_bar only allows for one variable and hence shows the count.
+```{r, fig.height = 1.75, fig.width = 5}
+	ggplot( data  =  diamonds ) +
+  		geom_col(  mapping = aes( x = cut, y = z ) )
+```
+
+3. (excluded)
+4. Stat_smooth uses se, x, y, ymin, and ymax variables.
+5. Without group = 1, the variables all look the same, they are evenly distributed.
+
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+#### 3.8.1 Position Adjustments
+
+1. The problem is that there are a few outliers. You could improve it by cutting off the domain at cty=30.
+2. Height and width.
+3. Geom_jitter scatters the points around the grid, where geom_count places one point on every intersection of gridlines.
+4. The default position is "dodge".
+```{r, fig.height = 4.75}
+	ggplot( data  =  mpg ) + geom_boxplot( mapping = aes( x = cyl, y = model ) )
+```
+
+#### 3.9.1 Coordinate Systems
+1.
+2. labs() adds labels by adding text to the axis, plot title, or caption below the plot.
+3. Coord_map shows a 3D image on a 2D space, and coord_quickmap aligns the image straightly.
+4. The plot shows that city and highway are positively correlated. Coord_fixed changes the ratio dimensions of the plot. Geom_abline adds the line beside the plotted points.
+
+```{r, fig.height = 1.75}
+	ggplot( data  =  mpg) + geom_bar( mapping = aes( x = displ ) ) + coord_polar( )
+```

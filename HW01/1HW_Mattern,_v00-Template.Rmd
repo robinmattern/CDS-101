@@ -1,0 +1,160 @@
+---
+title:  "visualization class I"
+author: "qing"
+date:   "September 7, 2017"
+output:
+  word_document:
+    keep_md              : yes
+    reference_docx	     : CDS_HW_Template.docm
+  pdf_document           : default
+  html_document          : default
+---
+<style>
+  H4 { margin-top        : 20px;
+       margin-left       : 10px;
+       margin-bottom     :  5px;
+       }
+ .Pagebreak {
+       font-size         :  1px;
+       margin-top        : -12px;
+       page-break-after  : always;
+       }
+</style>
+
+```{r setup, include = FALSE }
+    knitr::opts_chunk$set( echo      =  TRUE
+                         , fig.show  = 'hide', results    = 'hide'
+                         , fig.width =  7,     fig.height =  3
+#                        , fig.path  = 'IMGs/'
+                         , warning   =  FALSE, message    =  FALSE
+                           )
+```
+
+#### 3.1 Load library first:
+```{r}
+    library( ggplot2 )
+#   library( tidyverse )
+```
+
+#### 3.2.4 Examine dataset mpg:
+```{r}
+    mpg
+```
+
+#### 3.3.1 Plot relationship between engine size and highway mileage:
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ), color = "red" )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ), size = 3 )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy, color = class ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy, shape = class ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy, size = class ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy, size = cyl ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy )
+                  ,  shape   =  10, size = 5, stroke = 1
+                  ,  colour  = "black", fill   = "white"
+                     )
+
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+#### 3.5.1 Add Facets
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_wrap( ~class )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_wrap( ~class,nrow = 2)
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_grid(  drv~class )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_grid( .~drv )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_grid( ~drv  )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) + facet_grid(  drv~. )
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+#### 3.6.1 Add more layers:
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) +
+        geom_smooth( mapping =  aes( x = displ, y = hwy ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) +
+        geom_smooth( mapping =  aes( x = displ, y = hwy )
+                   , color   = "blue", size = 2, linetype = "dashed" )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) +
+        geom_smooth( mapping =  aes( x = displ, y = hwy, group = drv ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) +
+        geom_smooth( mapping =  aes( x = displ, y = hwy, color = drv ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) +
+        geom_smooth( mapping =  aes( x = displ, y = hwy, linetype = drv ) )
+```
+
+```{r}
+    ggplot( data  =  mpg ) +
+        geom_point(  mapping =  aes( x = displ, y = hwy ) ) +
+        geom_smooth( mapping =  aes( x = displ, y = hwy )
+                   , method  = "lm", color = "red", se = FALSE )
+```
+
