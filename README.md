@@ -1,6 +1,6 @@
 # CDS-101 Homework Assignment Templates
 
-Create a new Project, `CDS-01`, in RStudio on your computer for the files in this respoitory: `https://github.com/robinmattern/CDS-101.git`.  After the files have been downloaded or "cloned", there will be two homework assignment folders.  The `HW02` folder, for Homework Assignment No. 2, will contain three `.Rmd` files:
+Create a new Project, `CDS-01`, in RStudio on your computer for the files in this respoitory: `https://github.com/robinmattern/CDS-101.git`.  After the files have been downloaded or "cloned", there will be two homework assignment folders.  The  `HW02` folder, for Homework Assignment No. 2, will contain three `.Rmd` files:
   
   * The original text from the textbook, `transform.rmd`.  
   * A clean document with just the questions,`2HW_Transform-Exercises-v01.Rmd`. It uses the Word template, `CDS_HW_Template-wBox.docm`. 
