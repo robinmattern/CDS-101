@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 README.html
+*.Rproj
+.gitignore
+CDS-101.Rproj
