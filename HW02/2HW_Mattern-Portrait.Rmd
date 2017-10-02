@@ -1,0 +1,264 @@
+---
+title: "2HW_Mattern"
+author: "Rebecca Mattern"
+date: "October 3, 2017"
+output:
+  word_document:
+    reference_docx: CDS_HW_Template-wBox.docm
+  html_document: default
+  pdf_document: default
+classoption: portrait
+mainfont: Arial
+geometry: margin=.5in
+fontsize: 12pt
+---
+<style>
+ .author { text-align        : center; margin : 0px; }       
+ .title  { text-align        : center; margin : 0px; }       
+ .date   { text-align        : center; margin : 0px; }       
+  H4     { margin-top        : 20px;
+           margin-left       : 10px;
+           margin-bottom     :  5px;
+           }
+ .Pagebreak {
+          font-size         :  1px;
+          margin-top        : -12px;
+          page-break-after  :  always;
+          }
+</style>
+
+# 5 Data transformation {#transform}
+
+<!-- -------------------------------------------------------------------------------- -->
+
+```{r setup, message = FALSE}
+library(nycflights13)
+library(tidyverse)
+```
+
+### 5.2.4 Exercises
+
+1. Find all flights that: 
+   i.  Had an arrival delay of two or more hours
+    ```{r}
+    filter(flights, arr_delay > 120)
+    ```  
+    ii.  Flew to Houston (`IAH` or `HOU`)
+    ```{r}
+    filter(flights, dest == "IAH" | dest == "HOU")
+    ```       
+    iii.  Were operated by United, American, or Delta
+    ```{r}
+    filter(flights, carrier == "UA" | carrier == "AA" | carrier == "DL")
+    ```
+    iv.  Departed in summer (July, August, and September)
+    ```{r}
+    filter(flights, month == 7 | month == 8 | month == 9)
+    ```
+    v.  Arrived more than two hours late, but didn't leave late
+    ```{r}
+    filter(flights, arr_delay > 120, dep_delay <= 0)
+    ```
+    vi.  Were delayed by at least an hour, but made up over 30 minutes in flight
+    ```{r}
+    filter(flights, dep_delay >= 60, dep_delay - arr_delay > 30)
+    ```
+    
+    vii.  Departed between midnight and 6am (inclusive)?
+    ```{r}
+    filter(flights, dep_time <= 600 | dep_time == 2400)
+    ```
+
+2. Another useful dplyr filtering helper is `between()`. What does it do? It simplifies filtering data between two given values. Instead of having to write two separate conditions, such as x > lower value and x < higher value, you can instead write, between(x, lower value, higher value). For example: 
+```{r}
+filter(flights, between(dep_time, 0, 600))
+```
+
+3. How many flights have a missing "dep_time"? 
+```{r}
+filter(flights, is.na(dep_time))
+```
+There are 8,255 flights with missing departure times. They also having missing departure delay, arrival, and arrival delay times. These rows may account for cancelled flights.
+
+4. Why is "NA ^ 0" not missing? Because x^0 is always 1. 
+```{r}
+NA ^ 0
+```
+Why is NA | TRUE not missing? Because stating something is True makes it always true.
+```{r}
+NA | TRUE
+```
+Why is "FALSE & NA" not missing? Similar to before, something false is always false.
+```{r}
+FALSE & NA
+```
+Can you figure out the general rule? Because when working with an unknown variable like NA, you can look at the general rule without having to know its contents. 
+```{r}
+NA * 0
+```
+
+### 5.3.1 Exercises
+
+1. How could you use arrange() to sort all missing values to the start? 
+```{r}
+arrange(flights, desc(is.na(dep_time)), dep_time)
+```
+
+2.  Sort "flights" to find the most delayed flights. Find the flights that left earliest.
+```{r}
+arrange(flights, dep_delay)
+```
+
+3.  Sort "flights" to find the fastest flights.
+```{r}
+arrange(flights, air_time)
+```
+
+4.  Which flights travelled the longest? Which travelled the shortest?
+Longest flights: 
+```{r}
+arrange(flights, desc(distance))
+```
+Shortest flights:
+```{r}
+arrange(flights, distance)
+```
+
+### 5.4.1 Exercises
+
+1.  Brainstorm as many ways as possible to select "dep_time", "dep_delay", "arr_time", and "arr_delay" from "flights."
+```{r}
+select(flights, dep_time, dep_delay, arr_time, arr_delay)
+```
+```{r}
+select(flights, dep_time:arr_delay, -(sched_dep_time), -(sched_arr_time))
+```
+```{r}
+select(flights, starts_with("dep"), starts_with("arr"))
+```
+```{r}
+select(flights, ends_with("delay"), ends_with("time"), -(starts_with("sched")), -(air_time))
+```
+    
+2.  What happens if you include the name of a variable multiple times in a "select()" call?
+It still produces a table with the variable without error. 
+```{r}
+select(flights, distance, distance)
+```
+  
+3.  What does the "one_of()" function do? Why might it be helpful in conjunction with this vector? The "one_of()" function allows you to select data from a preset vector. 
+```{r}
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, one_of(vars))
+```
+
+4.  Does the result of running the following code surprise you?  How do the select helpers deal with case by default? How can you change that default? No, the results do not suprise me because the "contains()" function worked exactly it should, by choosing variables that contain the text, "time". The select helper ignores case, treating "TIME", "Time", and "time" equally. I could change this by adding, "ignore,case = FALSE".
+
+```{r}
+select(flights, contains("TIME"))
+```
+
+### 5.5.2 Exercises
+
+1. Currently "dep_time" and "sched_dep_time" are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+```{r}
+dep_time_broken <- transmute(flights, dep_time, 
+          hour = dep_time %/% 100, 
+          minute = dep_time %% 100) 
+mutate(dep_time_broken, hour * 60 + minute)
+```
+```{r}
+sched_dep_time_broken <- transmute(flights, sched_dep_time, 
+          hour = sched_dep_time %/% 100, 
+          minute = sched_dep_time %% 100) 
+mutate(sched_dep_time_broken, hour * 60 + minute)
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+2. Compare "air_time" and "arr_time - dep_time". What do you expect to see? I expect to see the same values in both cases. 
+```{r}
+flights_updated <- mutate(flights, difference = arr_time - dep_time)
+select(flights_updated, air_time, difference)
+```
+<!-- <div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak -->
+
+What do you see? They are different. What do you need to do to fix it? I need to change it to the continuous representation of numbers as in the last question.
+
+```{r, echo=F, eval=F, results='hide'}
+    say <- function( aMsg, aVar ) { cat( " ", aMsg, aVar, "\n" ) }
+    say( " 0. length(flights$arr_time):", length( flights$arr_time ) ) 
+
+    dep_time_broken <- transmute( flights, dep_time, 
+           hour   = dep_time %/% 100, 
+           minute = dep_time %%  100 ) 
+    say( " 1. length(dep_time_broken$dep_time):", length( dep_time_broken$dep_time ) ) 
+    
+#                       mutate( dep_time_broken,           hour * 60 + minute ) ##.(70930.03.1 RAM Doesn't do anything)
+    dep_time_broken2 <- mutate( dep_time_broken, minutes = hour * 60 + minute ) # .(70930.03.1 RAM Added assignment and minutes = )
+    say( " 2. length(dep_time_broken2$minutes):", length( dep_time_broken2$minutes ) )
+    
+    arr_time_broken <- transmute( flights, arr_time, 
+           hour   = arr_time %/% 100,
+           minute = arr_time %%  100 )
+    say( " 3. length(arr_time_broken):", length( arr_time_broken$arr_time ) ) 
+
+#                       mutate( arr_time_broken,           hour * 60 + minute)  ##.(70930.03.2 RAM Doesn't do anything)
+    arr_time_broken2 <- mutate( arr_time_broken, minutes = hour * 60 + minute ) # .(70930.03.2 RAM Added assignment and minutes = )
+    say( " 4. length(arr_time_broken2$minutes):", length( arr_time_broken2$minutes ) )
+
+#   flights_updated  <- mutate( flights,                                        ##.(70930.03.3 RAM Gets an error trying to mutate, i.e. add multiple columns as one argument
+#          difference = arr_time_broken - dep_time_broken )                                        Subtracts multiple columns, i.e. all three, from each other )
+#          difference = arr_time_broken - dep_time_broken                                          
+#   say( " 5. difference columns:", names( difference ) ) 
+    
+#   difference2  <-  arr_time_broken2$minutes - dep_time_broken2$minutes        ##.(70930.03.3 RAM Subtracts just the one column, minutes, returning a vector )
+#   difference2  <-  mutate( difference,                                          
+#          minutes = arr_time_broken2$minutes - dep_time_broken2$minutes )      ##.(70930.03.3 RAM Subtracts just the one column: minutes, returning a tribble )
+#   say( " 6. difference2 columns:", names( difference2 ) ) 
+
+    flights_updated <- mutate( flights, 
+           difference = arr_time_broken2$minutes - dep_time_broken2$minutes )   #.(70930.03.3 RAM Adds only one column )   
+    say( " 7. length(flights_updated$difference):", length( flights_updated$difference ) ) 
+
+    select(flights_updated, dep_time, arr_time, air_time, difference)
+```
+<!-- <div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak -->
+
+```{r}
+    dep_time_broken <- transmute(flights, dep_time, dep_time %/% 100, 
+          hour = dep_time%/% 100,                                                
+          minute = dep_time %% 100) 
+    dep_time_broken <- mutate(dep_time_broken, minutes = hour * 60 + minute)            # .(70930.03.1 RAM Added assignment and minutes = )
+
+    arr_time_broken <- transmute(flights, arr_time, 
+          hour = arr_time%/% 100,                                                       # .(70930.02.1 RAM was dep_time )
+          minute = arr_time %% 100)
+    arr_time_broken <- mutate(arr_time_broken, minutes = hour * 60 + minute)            # .(70930.03.2 RAM Added assignment and minutes = )
+
+#   flights_updated <- mutate(flights, 
+#         difference =  arr_time_broken - dep_time_broken)                              ##.(70930.03.3 RAM Gets an error  trying to mutate, i.e. add multiple columns as one argument)
+    flights_updated <- mutate( flights, 
+           difference = arr_time_broken$minutes - dep_time_broken$minutes )             # .(70930.03.3 RAM Adds only one column )   
+    
+    select(flights_updated, dep_time, arr_time, air_time, difference)
+```
+<div class="Pagebreak">&#160; &#160;&#160;</div> \pagebreak
+
+3. Compare "dep_time", "sched_dep_time", and "dep_delay". 
+```{r}
+select(flights, dep_time, sched_dep_time, dep_delay)
+```
+How would you expect those three numbers to be related? I would expect "dep_delay" to be the difference between "sched_dept_time" and "dep_time".
+
+4. Find the most 10 delayed flights using a ranking function.
+```{r}
+mutate(flights, min_rank(desc(dep_delay)))  # ,.(70930.04.1 RAM Added training paren)
+```
+
+5. What does 1:3 + 1:10 return? Why?
+```{r}
+1:3 + 1:10
+```
+
+
+
