@@ -2,3 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+<<<<<<< HEAD
+=======
+README.html
+*.Rproj
+.gitignore
+CDS-101.Rproj
+>>>>>>> 285360c694e32295c5ab4a427ab2b3d940d01442
